@@ -1,0 +1,30 @@
+# Tier B: fetched, never committed.  See scripts/fetch_data.sh and data/manifest.toml.
+models/*/A.csv
+models/*/results/cutting_plane_full_cloud/committee_stable.jls
+models/*/results/cutting_plane_full_cloud/committee_full_cloud*.jls
+models/*/results/cutting_plane_full_cloud/member_diagnostics.csv
+models/*/results/undotted_Hbasis_*.jls
+models/*/results/*/bandpath_*_aref.jls
+data/Al/
+data/W/
+
+# Reproduction output.  Every pipeline stage writes here; none of it is the paper's.
+models/*/results/repro_*/
+models/*/repro_*.csv
+**/repro_*.pdf
+**/repro_*.png
+
+# Julia, LaTeX, editors
+*.jl.cov
+*.jl.mem
+/docs/build/
+*.aux
+*.log
+*.out
+*.synctex.gz
+.vscode/
+.CondaPkg/
+
+# NOTE: tier A is *.csv, *.json and *.jls under models/ and it IS tracked.
+# Do not add a blanket *.csv rule here — the source repository has one, and copying it
+# across is how you get a repository that looks complete and contains no data.

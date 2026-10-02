@@ -1,0 +1,9 @@
+# npt_member=softest  committee=bandpath_undotted_multivolume  vol_scales=1.0 1.02 1.04 1.06 1.08 1.1
+# minomega_at_constrained_volumes_THz=0.3607 0.2597 0.1503 0.2554 0.1997 0.1905
+# alpha_1perK=2.631e-5  fcc_points=3/4
+T_K,a_Ang,a_std_Ang,delta_a_over_a0_pct,min_omega_THz,mean_coord,median_nn_Ang,still_fcc
+0,4.044936,0,0,0.2882,12.00,2.8602,true
+300,4.077861,0.004956,0.8140,0.3021,11.9900,2.7257,true
+500,4.099550,0.006255,1.3502,0.2896,11.8471,2.6885,true
+700,4.120435,0.008445,1.8665,0.2801,11.5121,2.6590,true
+900,4.312109,0.010641,6.6051,0.2078,9.1187,2.4980,false

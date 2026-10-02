@@ -1,0 +1,41 @@
+# Lattice spacing of aluminium vs temperature.
+# A. J. C. Wilson, "The thermal expansion of aluminium from 0 to 650 C",
+#   Proc. Phys. Soc. 53 (1941) 235-244.   doi:10.1088/0959-5309/53/3/305
+# Transcribed from the table on p. 240 ("The spacing and expansion coefficient of
+# aluminium"), NOT from the rounded 4-figure table in the abstract.
+#
+# UNITS: a_kX_obs and a_kX_calc are in kX (Siegbahn X-ray) units, as published.
+# The paper writes "A." throughout, but in 1941 X-ray lattice constants were on the
+# Siegbahn scale, renamed kX in 1947 precisely because of this confusion.  Two
+# independent confirmations that these are kX and not angstroms:
+#   * Wilson quotes agreement with Jette & Foote (1935) 4.04133 and Ievins &
+#     Straumanis (1936) 4.04143 -- both are the classic kX-scale values for Al.
+#   * his 25 C spacing, 4.04134, is 0.207% below the modern accepted 4.0495 A,
+#     which is the kX->A conversion factor to five decimal places.
+# Multiply by ~1.00202 to obtain angstroms.  The plotting script does this and prints
+# the converted 25 C value against the accepted value as a check.
+#
+# a_kX_calc is Wilson's least-squares parabola, equation (1) of the paper:
+#     d = 4.03915 + 0.0090057 x + 0.00043143 x^2,     x = T_C / 100
+# Every row of a_kX_obs was verified against a_kX_calc and the paper's own
+# difference column; all ten agree to the last published digit.
+#
+# alpha_1e6_eq2       10^6 * alpha from Wilson's equation (2), i.e. the parabola slope
+# alpha_1e6_preferred 10^6 * alpha from his figure-4 curve, which he states is the
+#                     better representation.  Blank where the paper gives no value.
+# Note alpha is strongly temperature dependent (22 -> 37 x 10^-6 /K over this range),
+# so any single linear expansion coefficient is a range average.
+#
+# Stated accuracy: systematic and random errors in d each about 0.0001 A;
+# error in alpha 1 to 2 per cent.  Aluminium 99.992% pure.
+T_C,n_films,a_kX_obs,a_kX_calc,alpha_1e6_eq2,alpha_1e6_preferred
+0,4,4.03906,4.03915,22.3,22.0
+25,5,4.04134,4.04143,NaN,NaN
+100,1,4.04855,4.04859,24.4,25.4
+150,1,4.05382,4.05363,NaN,NaN
+200,2,4.05915,4.05889,26.4,26.5
+300,2,4.07005,4.07006,28.5,27.8
+400,2,4.08198,4.08209,30.5,29.9
+500,1,4.09468,4.09498,32.6,32.5
+600,7,4.10867,4.10874,34.5,35.5
+650,4,4.11618,4.11594,35.5,37.2

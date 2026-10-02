@@ -1,0 +1,7 @@
+# npt_member=naive-worst  naive_worst_minomega=-8.6556  con_soft_minomega=0.2777  con_soft_source=repaired[20]
+T_K,a_Ang,a_std_Ang,delta_a_over_a0_pct,min_omega_THz
+0,4.035234,0,0,-8.2106
+300,4.166635,0.003981,3.2563,-11.3676
+500,4.138910,0.004355,2.5693,-11.1065
+700,4.228044,0.006616,4.7782,-11.4091
+900,4.248448,0.008963,5.2838,-11.2738
