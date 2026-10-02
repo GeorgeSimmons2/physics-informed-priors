@@ -14,9 +14,25 @@ parameters rather than replot them:
 
 ```bash
 bash scripts/fetch_data.sh      # the design matrices and datasets (~7.9 GB)
-bash run_all.sh reproduce       # re-solve every constrained optimisation
-bash run_all.sh verify          # what matched, and how closely
+
+bash run_all.sh constrain       # re-solve every constrained optimisation   (SLURM)
+bash run_all.sh npt-saved       # NPT on the published θ — reproduces the figures
+bash run_all.sh npt-rebuilt     # NPT on rebuilt committees — a different member
+bash run_all.sh verify          # what matched, and how closely             (seconds)
+
+NPT_TAG=saved bash run_all.sh figures   # all four figures from the reproduction
+NPT_TAG=e2e   bash run_all.sh figures   # ... from the rebuilt-committee run
 ```
+
+`bash run_all.sh all` submits `constrain` and both NPT routes in one go. Every stage writes
+to a `repro_*` directory, so nothing overwrites the published artifacts, and the figures are
+written beside the published ones with a `repro_` prefix.
+
+**Which NPT route reproduces the paper.** Committee members are not reproducible run to run,
+so rebuilding the committee selects a different "softest" member and α moves from 2.7 to
+3.6 ×10⁻⁵ K⁻¹. `npt-saved` reruns the published θ vectors, which are shipped as tier-A data,
+and reproduces the published a(T) exactly. `npt-rebuilt` is the end-to-end claim and does not
+match the paper. Both are kept because they answer different questions.
 
 ## What is in the paper, and what made it
 

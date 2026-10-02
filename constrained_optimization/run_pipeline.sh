@@ -73,7 +73,11 @@ stage_al16() {
 # NPT, end to end.  Deliberately NOT `npt_trajectories/run_pipeline.sh all`, which (a) wrote
 # into repro_npt_* where the 27 Aug reproduce-mode run already lives, and (b) never cleared
 # THETA_FILE, so its MD reran the published θ instead of the new committee.
+# Which MD route the figures read.  "e2e" = the rebuilt-committee run (repro_e2e_npt_*);
+# "saved" = the run on the published θ vectors (repro_npt_*), which is what reproduces the
+# published figures, since committee members are not reproducible run to run.
 NPT_TAG=${NPT_TAG:-e2e}
+[ "$NPT_TAG" = saved ] && NPT_TAG="" && PFX="" || PFX="${NPT_TAG}_"
 stage_npt() {
   local NT="$REPO/npt_trajectories"
   JOB_NMV=$(COMMITTEE_OUT="$A12/repro_bandpath_undotted_multivolume" \
@@ -85,16 +89,16 @@ stage_npt() {
   # Both arms still write theta_used.csv, and `verify` compares those afterwards.
   JOB_MDC=$(THETA_FILE= THETA_REF=none \
             COMMITTEE_DIR="$A12/repro_bandpath_undotted_multivolume" \
-            OUTDIR="$A12/repro_${NPT_TAG}_npt_multivolume_softest" \
+            OUTDIR="$A12/repro_${PFX}npt_multivolume_softest" \
             submit --dependency=afterok:"$JOB_NMV" "$NT/run_npt_constrained_softest.slurm")
   JOB_MDU=$(THETA_FILE= THETA_REF=none \
             COMMITTEE_DIR="$A12/repro_bandpath_undotted" \
-            OUTDIR="$A12/repro_${NPT_TAG}_npt_thermal_expansion_naive_worst_member" \
+            OUTDIR="$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member" \
             submit --dependency=afterok:"$JOB_NAEQ" "$NT/run_npt_unconstrained_naive_worst.slurm")
   echo "    multi-volume committee    : job $JOB_NMV  → repro_bandpath_undotted_multivolume/"
   echo "    a_eq committee            : job $JOB_NAEQ  → repro_bandpath_undotted/"
-  echo "    MD constrained (softest)  : job $JOB_MDC  (after $JOB_NMV)  → repro_${NPT_TAG}_npt_multivolume_softest/"
-  echo "    MD unconstrained (worst)  : job $JOB_MDU  (after $JOB_NAEQ)  → repro_${NPT_TAG}_npt_thermal_expansion_naive_worst_member/"
+  echo "    MD constrained (softest)  : job $JOB_MDC  (after $JOB_NMV)  → repro_${PFX}npt_multivolume_softest/"
+  echo "    MD unconstrained (worst)  : job $JOB_MDU  (after $JOB_NAEQ)  → repro_${PFX}npt_thermal_expansion_naive_worst_member/"
 }
 
 case "$STAGE" in
@@ -137,13 +141,20 @@ figures)
     julia --project -t "${THREADS:-8}" eos_repulsive_core/eos_with_pair_hist.jl
 
   echo "  [3/3] thermal_expansion_vs_experiment — from the repro_ NPT summaries"
-  DIR_UNCON="$A12/repro_${NPT_TAG}_npt_thermal_expansion_naive_worst_member" \
-  DIR_CON="$A12/repro_${NPT_TAG}_npt_multivolume_softest" \
+  DIR_UNCON="$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member" \
+  DIR_CON="$A12/repro_${PFX}npt_multivolume_softest" \
   OUT="$REPO/thermal_expansion_vs_experiment/repro_thermal_expansion_aT_vs_experiment" \
     julia --project thermal_expansion_vs_experiment/plot_thermal_expansion_vs_experiment.jl
 
+  echo "  [4/4] fcc_compare — was the lattice still FCC when a(T) was measured?"
+  DIR_UNCON="$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member" \
+  DIR_CON="$A12/repro_${PFX}npt_multivolume_softest" \
+  OUT="$REPO/thermal_expansion_vs_experiment/repro_fcc_compare_constrained_vs_naive_300K" \
+    julia --project -t "${THREADS:-8}" thermal_expansion_vs_experiment/fcc_compare_constrained_vs_naive.jl
+
   echo
   echo "Figures written beside the published ones with a repro_ prefix — compare, do not replace."
+  echo "NPT_TAG=$NPT_TAG selected the MD route: 'e2e' = rebuilt committees, '' = the saved published θ."
   ;;
 
 verify)
@@ -176,8 +187,8 @@ status)
     "$A12/repro_naive_vs_constrained/samples_naive.csv" \
     "$A16/repro_pinned_ensembles/ensemble_constrained.csv" \
     "$A16/repro_pinned_ensembles/bands_two_ensembles.jls" \
-    "$A12/repro_${NPT_TAG}_npt_multivolume_softest/thermal_expansion_summary.csv" \
-    "$A12/repro_${NPT_TAG}_npt_thermal_expansion_naive_worst_member/thermal_expansion_summary.csv" ; do
+    "$A12/repro_${PFX}npt_multivolume_softest/thermal_expansion_summary.csv" \
+    "$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member/thermal_expansion_summary.csv" ; do
     if [ -e "$f" ]; then printf "  %-8s %s\n" "$(du -h --apparent-size "$f" | cut -f1)" "${f#$REPO/}"
     else                 printf "  %-8s %s\n" "—" "${f#$REPO/}"; fi
   done
