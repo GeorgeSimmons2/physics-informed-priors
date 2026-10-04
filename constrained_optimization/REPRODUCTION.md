@@ -1,6 +1,6 @@
 # Reproduction report
 
-Generated 2026-10-02 13:35 by `constrained_optimization/verify/compare_all.jl`.
+Generated 2026-10-02 22:53 by `constrained_optimization/verify/compare_all.jl`.
 
 Tiers, and why they differ — see `lib_verify.jl` for the measurements behind them:
 

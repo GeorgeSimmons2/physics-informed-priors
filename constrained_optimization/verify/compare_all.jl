@@ -71,7 +71,7 @@ push!(checks, check_distribution("Al_12 naive relaxed a", :converged,
 # [20,20,20,20,60] (141), which shifts every min ω down ~0.1 THz — the mean model, same θ
 # in both, moves 0.408 → 0.315.  Compare against the GRID-MATCHED rerun instead, or the
 # comparison measures the q-grid rather than the parameters.
-AL16_REPRO = get(ENV, "AL16_REPRO", "$AL16/repro_pinned_ensembles_nps20")
+AL16_REPRO = get(ENV, "AL16_REPRO", "$AL16/repro_pinned_ensembles")
 for tag in ("unconstrained", "constrained")
     push!(checks, check_distribution("Al_16 $tag, native min ω (grid-matched)", :converged,
         "$AL16/pinned_ensembles/bands_$tag.csv",

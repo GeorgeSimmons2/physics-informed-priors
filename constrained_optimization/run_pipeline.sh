@@ -77,7 +77,9 @@ stage_al16() {
 # "saved" = the run on the published θ vectors (repro_npt_*), which is what reproduces the
 # published figures, since committee members are not reproducible run to run.
 NPT_TAG=${NPT_TAG:-e2e}
-[ "$NPT_TAG" = saved ] && NPT_TAG="" && PFX="" || PFX="${NPT_TAG}_"
+# PFX selects the MD directory; SFX keeps the two routes' figures from overwriting each
+# other, since only the a(T) and FCC figures depend on which MD route was used.
+if [ "$NPT_TAG" = saved ]; then PFX=""; SFX="_saved"; else PFX="${NPT_TAG}_"; SFX="_${NPT_TAG}"; fi
 stage_npt() {
   local NT="$REPO/npt_trajectories"
   JOB_NMV=$(COMMITTEE_OUT="$A12/repro_bandpath_undotted_multivolume" \
@@ -143,13 +145,21 @@ figures)
   echo "  [3/3] thermal_expansion_vs_experiment — from the repro_ NPT summaries"
   DIR_UNCON="$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member" \
   DIR_CON="$A12/repro_${PFX}npt_multivolume_softest" \
-  OUT="$REPO/thermal_expansion_vs_experiment/repro_thermal_expansion_aT_vs_experiment" \
+  OUT="$REPO/thermal_expansion_vs_experiment/repro_thermal_expansion_aT_vs_experiment$SFX" \
     julia --project thermal_expansion_vs_experiment/plot_thermal_expansion_vs_experiment.jl
 
   echo "  [4/4] fcc_compare — was the lattice still FCC when a(T) was measured?"
+  # rdf_<T>K.csv / coordination_<T>K.csv have no producer in the original tree: they were a
+  # side effect of two legacy FIGURE scripts, so a pipeline rerun leaves the NPT output
+  # without them and this figure cannot be drawn.  Generate them from each run's own
+  # trajectory first (verified byte-identical to the published files).
+  for d in "$A12/repro_${PFX}npt_multivolume_softest" \
+           "$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member"; do
+    julia --project thermal_expansion_vs_experiment/make_rdf_coordination.jl "$d" 300
+  done
   DIR_UNCON="$A12/repro_${PFX}npt_thermal_expansion_naive_worst_member" \
   DIR_CON="$A12/repro_${PFX}npt_multivolume_softest" \
-  OUT="$REPO/thermal_expansion_vs_experiment/repro_fcc_compare_constrained_vs_naive_300K" \
+  OUT="$REPO/thermal_expansion_vs_experiment/repro_fcc_compare_constrained_vs_naive_300K$SFX" \
     julia --project -t "${THREADS:-8}" thermal_expansion_vs_experiment/fcc_compare_constrained_vs_naive.jl
 
   echo
