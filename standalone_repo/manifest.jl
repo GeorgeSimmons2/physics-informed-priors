@@ -17,6 +17,13 @@
 # `producer` is the script that makes the file, or :external for a data root that cannot
 # be regenerated from this repository at all.
 
+# Code entries are whole directories, copied recursively, so anything living inside one
+# travels with it whether or not it belongs to this paper.  EXCLUDE is pruned from the
+# target after copying.  mo_mace/ is a separate MACE-MPA-0 / Mo elastic-constants project
+# that shares the constrained_optimization/ directory and is nothing to do with the four
+# figures; it was swept in by an earlier build.
+const EXCLUDE = ["constrained_optimization/mo_mace"]
+
 const MODELS = ["Al_12_4_6A_2_", "Al_16_4_6A_3_", "W_20_4_5A_3"]
 
 entry(path, tier, producer, note; rebuildable=false) =

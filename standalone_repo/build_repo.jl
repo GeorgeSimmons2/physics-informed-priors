@@ -48,6 +48,12 @@ for f in FILES
 end
 @printf("copied %d code entries and %d tier-A files (%.1f MB)\n", n_code, n_A, bytes_A/1e6)
 
+# Prune anything that rode in on a recursive directory copy without belonging here.
+for x in EXCLUDE
+    p = joinpath(TARGET, x)
+    ispath(p) && (rm(p; recursive=true, force=true); println("pruned (EXCLUDE): ", x))
+end
+
 # ── data/manifest.toml ───────────────────────────────────────────────────────
 mkpath(joinpath(TARGET, "data"))
 open(joinpath(TARGET, "data", "manifest.toml"), "w") do io
