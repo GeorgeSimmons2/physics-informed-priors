@@ -48,6 +48,19 @@ entry("standalone_repo", :code, :repo,
       "manifest, the archive script and the README/run_all templates.  Shipped so the " *
       "repository can be regenerated or updated without the original working tree"),
 
+# ══ code: RLS vs constrained RLS at 200 K (fifth figure) ══════════════════════
+# Individual files, not the directory: the working folder also holds exploration runs
+# (±2%, POPS comparison, 400/600 K) that are not part of this figure.
+[entry("scripts/uq/rls_constrained_pops_Al_12/$f", :code, :repo, n) for (f, n) in (
+    ("README.md",                        "steps a)–e), plot data, caption notes"),
+    ("run_200K.sh",                      "replot | all (SLURM-chained into repro_*)"),
+    ("compare_rls_Al_12_4_6A_2.jl",      "a) constrained RLS: ω > 0 over a_eq·(1.00:0.02:1.10), 5×5×5"),
+    ("run_constrain.slurm",              "a) on hmem"),
+    ("run_npt.slurm",                    "b) 200 K NPT for MODEL = rls | constrained"),
+    ("fig_200K_rls_vs_constrained.jl",   "d)+e) phonons at a(200 K), figure, plot data"))]...,
+entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
+      "b) the NPT driver (MODELDIR selects the model; same protocol as the paper's NPT)"),
+
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
        "scripts/model_building/build_model.jl",
@@ -132,6 +145,25 @@ entry("models/Al_16_4_6A_3_/results/pinned_ensembles/bands_two_ensembles.jls", :
 
 entry("thermal_expansion_vs_experiment/wilson_1941_aluminium.csv", :A, :external,
       "Wilson 1941, Proc. Phys. Soc. 53 235 — the experimental a(T)"),
+
+# ══ tier A: RLS vs constrained RLS at 200 K ══════════════════════════════════
+entry("scripts/uq/rls_constrained_pops_Al_12/results_rls/theta_rls_constrained.csv", :A, "scripts/uq/rls_constrained_pops_Al_12/compare_rls_Al_12_4_6A_2.jl",
+      "the constrained RLS θ — the blue model"),
+entry("scripts/uq/rls_constrained_pops_Al_12/results_rls/bands_rls_vs_constrained.png", :A, "scripts/uq/rls_constrained_pops_Al_12/compare_rls_Al_12_4_6A_2.jl",
+      "RLS vs constrained bands at each constrained volume"),
+[entry("scripts/uq/rls_constrained_pops_Al_12/npt/$m/$f", :A, f in ("rdf_200K.csv", "coordination_200K.csv") ?
+       "thermal_expansion_vs_experiment/make_rdf_coordination.jl" : "npt_al16/npt_member_Al_16.jl",
+       "200 K NPT, $m")
+ for m in ("rls", "constrained")
+ for f in ("theta_used.csv", "a0.csv", "T200K/summary_row.csv", "rdf_200K.csv", "coordination_200K.csv")]...,
+[entry("scripts/uq/rls_constrained_pops_Al_12/fig_200K/$f", :A, "scripts/uq/rls_constrained_pops_Al_12/fig_200K_rls_vs_constrained.jl",
+       endswith(f, ".csv") ? "plot data" : "the figure")
+ for f in ("fig_200K_rls_vs_constrained.pdf", "fig_200K_rls_vs_constrained.png", "metadata.csv",
+           "bands_rls.csv", "bands_constrained.csv", "band_ticks.csv", "rdf_rls.csv", "rdf_constrained.csv")]...,
+
+# ══ tier B: the 200 K trajectories — needed only to recompute the RDFs ═══════
+[entry("scripts/uq/rls_constrained_pops_Al_12/npt/$m/T200K/md_trajectory.extxyz", :B, "npt_al16/npt_member_Al_16.jl",
+       "200 K NPT trajectory, $m, 8.7 MB") for m in ("rls", "constrained")]...,
 
 # ══ tier B: design matrices.  7.4 GB of the 8 GB total ═══════════════════════
 entry("models/Al_12_4_6A_2_/A.csv", :B, "scripts/model_building/build_model.jl", "259 MB"),

@@ -3,6 +3,8 @@
 set -euo pipefail
 cd "/storage/astro2/phupfb/PhD/acestuff/ACEWorkflow/"
 tar -cvf "${OUT:-/storage/astro2/phupfb/PhD/acestuff/physics-informed-priors-repro/tierB.tar}" \
+  "scripts/uq/rls_constrained_pops_Al_12/npt/rls/T200K/md_trajectory.extxyz" \
+  "scripts/uq/rls_constrained_pops_Al_12/npt/constrained/T200K/md_trajectory.extxyz" \
   "models/Al_12_4_6A_2_/A.csv" \
   "models/Al_16_4_6A_3_/A.csv" \
   "models/W_20_4_5A_3/A.csv" \

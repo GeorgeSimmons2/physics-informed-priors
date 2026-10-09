@@ -102,6 +102,9 @@ data/W/
 # Reproduction output.  Every pipeline stage writes here; none of it is the paper's.
 models/*/results/repro_*/
 models/*/repro_*.csv
+scripts/uq/rls_constrained_pops_Al_12/repro_*/
+scripts/uq/rls_constrained_pops_Al_12/logs/
+scripts/uq/rls_constrained_pops_Al_12/npt/*/T200K/md_trajectory.extxyz
 **/repro_*.pdf
 **/repro_*.png
 
