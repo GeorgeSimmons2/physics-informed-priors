@@ -1,0 +1,14 @@
+# Python environment of the published run (Python 3.9.25, x86_64, CPU only).
+# The figure-only `run.sh replot` needs just numpy and matplotlib.
+mace-torch==0.3.16
+torch==2.8.0
+e3nn==0.4.4
+ase==3.26.0
+numpy==2.0.2
+scipy==1.13.1
+matplotlib==3.9.4
+h5py==3.14.0
+torch-ema==0.3
+torchmetrics==1.8.2
+opt-einsum==3.4.0
+matscipy==1.2.0

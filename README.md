@@ -42,6 +42,7 @@ match the paper. Both are kept because they answer different questions.
 | W equation of state | `eos_repulsive_core/` | `positive_core_constrained_parameters.csv` | `constrained_optimization/w/01_positive_core_qp.jl` |
 | Thermal expansion a(T) | `thermal_expansion_vs_experiment/` | the multi-volume and a_eq committees, then NPT | `npt_trajectories/` |
 | RLS vs constrained RLS, 200 K (phonons + RDFs) | `scripts/uq/rls_constrained_pops_Al_12/` | `results_rls/theta_rls_constrained.csv`, then 200 K NPT of both | `compare_rls_Al_12_4_6A_2.jl`, `npt_al16/npt_member_Al_16.jl`; rerun with `run_200K.sh all` |
+| MACE: elastic constants constrained, accuracy kept | `mace_al_elastic/` | `models/Al_small_stagetwo.model`, `results/theta_constrained_elastic.csv` | `train.sh`, `1_constraints.py` → `2_design.py` → `3_qp.jl` → `4_compare.py`; rerun with `mace_al_elastic/run.sh all` |
 
 Each folder has its own README covering the figure's construction and its caveats.
 `constrained_optimization/README.md` is the one to read first — it documents the whole
@@ -95,6 +96,7 @@ eos_repulsive_core/         the W equation-of-state figure
 thermal_expansion_vs_experiment/   a(T) against Wilson 1941
 scripts/uq/rls_constrained_pops_Al_12/   RLS vs constrained RLS at 200 K: runner, README, plot data
 npt_al16/                   the NPT driver that figure uses (MODELDIR selects the model)
+mace_al_elastic/            a trained MACE model with its elastic constants constrained (Python)
 models/                     tier A committed; A.csv fetched
 data/manifest.toml          every input: path, sha256, size, tier, producer
 scripts/fetch_data.sh       pull and verify tier B

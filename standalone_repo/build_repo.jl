@@ -105,6 +105,9 @@ models/*/repro_*.csv
 scripts/uq/rls_constrained_pops_Al_12/repro_*/
 scripts/uq/rls_constrained_pops_Al_12/logs/
 scripts/uq/rls_constrained_pops_Al_12/npt/*/T200K/md_trajectory.extxyz
+mace_al_elastic/repro_*/
+mace_al_elastic/results/repro_*
+mace_al_elastic/logs/
 **/repro_*.pdf
 **/repro_*.png
 

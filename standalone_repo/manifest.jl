@@ -61,6 +61,19 @@ entry("standalone_repo", :code, :repo,
 entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
       "b) the NPT driver (MODELDIR selects the model; same protocol as the paper's NPT)"),
 
+# ══ code: constraining the elastic constants of a trained MACE model (Al) ═════
+# Individual files: the folder also collects repro_* reruns, logs and the training scratch.
+[entry("mace_al_elastic/$f", :code, :repo, n) for (f, n) in (
+    ("README.md",        "what it shows, how to run it, what 'reproduced' means"),
+    ("requirements.txt", "Python environment of the published run (mace-torch 0.3.16)"),
+    ("train.sh",         "trains the small MACE exactly as published (seed 1, CPU, float64)"),
+    ("run.sh",           "replot | constrain | compare | train | all | verify"),
+    ("lib.py",           "readout basis D (E = ΣE0 + D·θ), θ ↔ model weights, strain helpers"),
+    ("1_constraints.py", "finite-difference rows ∂D/∂a, ∂²D/∂ε² at a0 = 4.04 Å"),
+    ("2_design.py",      "D on the whole training set + test sample; force normal equations"),
+    ("3_qp.jl",          "the constrained refit: MACE's loss, C11/C12/C44 and P(a0) = 0"),
+    ("4_compare.py",     "before/after parity, error distributions, C_ij by stress–strain"))]...,
+
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
        "scripts/model_building/build_model.jl",
@@ -178,6 +191,33 @@ entry("models/Al_12_4_6A_2_/results/cutting_plane_full_cloud/member_diagnostics.
       "constrained_optimization/al12/02_cutting_plane_full_cloud.jl",
       "per-member cuts / iters / min ω / status — what `verify` compares"),
 
+# ══ tier A: the MACE model and the elastic-constrained refit ══════════════════
+entry("mace_al_elastic/models/Al_small_stagetwo.model", :A, "mace_al_elastic/train.sh",
+      "trained MACE (stage two / SWA, epoch 340): the model every result is computed with"),
+entry("mace_al_elastic/models/train_config.txt", :A, "mace_al_elastic/train.sh",
+      "the full resolved mace-torch configuration of the published training run"),
+entry("mace_al_elastic/models/train_log.txt", :A, "mace_al_elastic/train.sh",
+      "the published training log: per-epoch validation errors and the final error tables"),
+[entry("mace_al_elastic/results/$f", :A, "mace_al_elastic/1_constraints.py", n) for (f, n) in (
+    ("theta0.csv",   "θ0: the trained readout weights"),
+    ("D0.csv",       "D at a0"),
+    ("dD_da.csv",    "∂D/∂a (pressure row)"),
+    ("d2D_da2.csv",  "∂²D/∂a² (bulk-modulus row)"),
+    ("d2D_de11.csv", "∂²D/∂ε₁² (C11 row)"),
+    ("d2D_de12.csv", "∂²D/∂ε₁∂ε₂ (C12 row)"),
+    ("d2D_de44.csv", "∂²D/∂ε₄² (C44 row)"),
+    ("frozen.csv",   "derivatives of E_frozen = ΣE0 (zero)"),
+    ("meta.txt",     "a0, V, model a0, step sizes"))]...,
+[entry("mace_al_elastic/results/$f", :A, "mace_al_elastic/3_qp.jl", n) for (f, n) in (
+    ("theta_constrained_elastic.csv", "θ of the elastic-constrained model"),
+    ("theta_ls_elastic.csv",          "θ of the unconstrained refit (for comparison)"),
+    ("qp_elastic.txt",                "the QP table: train/test E and F RMSE, C_ij, w_F scan"))]...,
+[entry("mace_al_elastic/results/$f", :A, "mace_al_elastic/4_compare.py", n) for (f, n) in (
+    ("compare_data.npz",     "test-set energies and forces of both models, and their C_ij — all the figure needs"),
+    ("compare_elastic.txt",  "before/after test RMSEs and C_ij"),
+    ("compare_elastic.pdf",  "the figure"),
+    ("compare_elastic.png",  "the figure"))]...,
+
 # ══ tier B: cached Hessians and band paths — regenerable ═════════════════════
 entry("models/Al_12_4_6A_2_/results/undotted_Hbasis_4x4x4_a4.04494.jls", :B,
       "constrained_optimization/al12/01_committee_ncell4_densek.jl",
@@ -191,6 +231,8 @@ entry("models/Al_16_4_6A_3_/results/pinned_ensembles/bandpath_4x4x4_aref.jls", :
 # ══ tier B: the DFT datasets.  Cannot be regenerated from this repo ══════════
 entry("data/Al/manual_df_train_Al.extxyz", :B, :external, "Al training set"),
 entry("data/Al/manual_df_test_Al.xyz",     :B, :external, "Al held-out test set, used for parity/calibration"),
+entry("data/Al/subset_20_percent.extxyz",  :B, :external,
+      "1,579 frames, exactly 20% of manual_df_train_Al.extxyz: the training set of the Al_12 ACE model and of mace_al_elastic"),
 entry("data/W/df_W_train.extxyz",          :B, :external, "W training set — the EOS figure's pair-distance histogram"),
 ]
 
