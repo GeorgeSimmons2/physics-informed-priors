@@ -10,6 +10,8 @@ outside this folder is written.
 ```bash
 bash run.sh            # p1 → p1b → p2 → p3 → p4 + p5 on SLURM, about 1.5 h
 bash run.sh replot     # the figures only, from results/eval_data.npz → results/repro_*.pdf (seconds, tier A)
+python3 p6_maxdev_vs_error.py            # after run.sh: |error| vs the largest member deviation toward DFT
+python3 p6_maxdev_vs_error.py --replot   # the same figures from results/maxdev_data.npz (seconds, tier A)
 ```
 
 **Result.** The constraints remove the committee's uncertainty in the lattice constant and elastic constants
@@ -32,6 +34,7 @@ the force error (RMSE/σ ≈ 2).
 | p3 | `p3_sample.jl` | `hypercube` of each cloud's deltas; `rejection_sample_hypercube` with the elastic windows (constrained), `sample_hypercube` (unconstrained); seed 1234, 100 members |
 | p4 | `p4_evaluate.py` | test-set UQ of each committee against its reference model (spread, min–max envelope coverage, calibration), and the relaxed a0 and C_ij of every member and both reference models |
 | p5 | `p5_figures.py` | the figures, each a separate half-width PDF/PNG: parity (reference model ± committee σ, RMSE printed), uncertainty vs error, calibration, C_ij spread |
+| p6 | `p6_maxdev_vs_error.py` | the reference model's \|error\| against the committee's largest deviation toward the DFT value, on linear axes; above the line = covered, which is the min–max envelope coverage of p4 |
 
 **The cloud.** The loss is the mean model's, L(θ) = ½ Σᵣ wᵣ (yᵣ − aᵣ·θ)², with w = 1/n_E for energies and
 w_F/n_F for force components (w_F = 0.1). The shift column stays at its trained value.
@@ -53,7 +56,7 @@ w_F/n_F for force components (w_F = 0.1). The shift column stays at its trained 
 
 Reruns write to `repro_results/` (`POPS_OUT`). The published run is `results/`, and it holds:
 - `committee_{constrained,unconstrained}.csv`: 100 × 81, one member per row.
-- `cloud.txt`, `sample.txt`, `uq_test.txt`, `cij_members.csv`, `eval_data.npz`.
+- `cloud.txt`, `sample.txt`, `uq_test.txt`, `cij_members.csv`, `eval_data.npz`, `maxdev_test.txt`, `maxdev_data.npz`.
 - Figures (PDF and PNG each): `parity_{E,F}_{constrained,unconstrained}`, `uncertainty_vs_error_{E,F}_{constrained,unconstrained}`,
-  `calibration_{E,F}`, `cij_spread`.
+  `calibration_{E,F}`, `cij_spread`, `maxdev_vs_error_{E,F}_{constrained,unconstrained}`.
 - `rows/` holds the rebuildable design rows (about 60 MB).

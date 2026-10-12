@@ -82,7 +82,8 @@ entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
     ("p2_cloud.jl",        "leverage, top 50%, one elastic-window QP per row; unconstrained cloud in closed form"),
     ("p3_sample.jl",       "POPS hypercube + rejection sampling (src/POPS/POPSRegression.jl), seed 1234"),
     ("p4_evaluate.py",     "test-set UQ vs each reference model; a0 and C_ij of every member"),
-    ("p5_figures.py",      "the figures, each a separate half-width PDF/PNG"))]...,
+    ("p5_figures.py",      "the figures, each a separate half-width PDF/PNG"),
+    ("p6_maxdev_vs_error.py", "|error| vs the largest member deviation toward DFT, linear axes; coverage = min–max envelope"))]...,
 
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
@@ -248,6 +249,13 @@ entry("mace_al_elastic/pops/results/cloud.txt", :A, "mace_al_elastic/pops/p2_clo
            "uncertainty_vs_error_E_constrained", "uncertainty_vs_error_E_unconstrained",
            "uncertainty_vs_error_F_constrained", "uncertainty_vs_error_F_unconstrained",
            "calibration_E", "calibration_F", "cij_spread")
+ for ext in ("pdf", "png")]...,
+[entry("mace_al_elastic/pops/results/$f", :A, "mace_al_elastic/pops/p6_maxdev_vs_error.py", n) for (f, n) in (
+    ("maxdev_test.txt", "coverage: fraction of test errors reached by a member deviating toward DFT"),
+    ("maxdev_data.npz", "test DFT values, reference predictions and the deviation toward DFT, for --replot"))]...,
+[entry("mace_al_elastic/pops/results/$f.$ext", :A, "mace_al_elastic/pops/p6_maxdev_vs_error.py", "figure")
+ for f in ("maxdev_vs_error_E_constrained", "maxdev_vs_error_E_unconstrained",
+           "maxdev_vs_error_F_constrained", "maxdev_vs_error_F_unconstrained")
  for ext in ("pdf", "png")]...,
 
 # ══ tier B: cached Hessians and band paths — regenerable ═════════════════════

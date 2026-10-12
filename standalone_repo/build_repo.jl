@@ -211,6 +211,8 @@ open(tarsh, "w") do io
     println(io, "echo \"tier B archive → \${OUT:-", TARGET, "/tierB.tar}\"")
 end
 chmod(tarsh, 0o755)
+# the copy step above shipped the PREVIOUS run's script (with that run's TARGET): ship this one
+cp(tarsh, joinpath(TARGET, "standalone_repo", "make_tierB_archive.sh"); force=true)
 println("wrote standalone_repo/make_tierB_archive.sh")
 
 @printf("\n══ done.  %s\n", TARGET)

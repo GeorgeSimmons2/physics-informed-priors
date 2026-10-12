@@ -59,6 +59,7 @@ replot)
   bash mace_al_elastic/run.sh replot
   echo "  [7/7] MACE constrained POPS: committee UQ and C_ij spread  (tier A; numpy + matplotlib only)"
   bash mace_al_elastic/pops/run.sh replot
+  python3 mace_al_elastic/pops/p6_maxdev_vs_error.py --replot
   ;;
 
 constrain|reproduce)
