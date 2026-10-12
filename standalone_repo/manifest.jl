@@ -72,7 +72,8 @@ entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
     ("1_constraints.py", "finite-difference rows ∂D/∂a, ∂²D/∂ε² at a0 = 4.04 Å"),
     ("2_design.py",      "D on the whole training set + test sample; force normal equations"),
     ("3_qp.jl",          "the constrained refit: MACE's loss, C11/C12/C44 and P(a0) = 0"),
-    ("4_compare.py",     "before/after parity, error distributions, C_ij by stress–strain"))]...,
+    ("4_compare.py",     "before/after parity, error distributions, C_ij by stress–strain"),
+    ("5_elastic_matscipy.py", "independent C_ij check: matscipy stress–strain on ASE Atoms, from the two checkpoints"))]...,
 
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
@@ -194,6 +195,8 @@ entry("models/Al_12_4_6A_2_/results/cutting_plane_full_cloud/member_diagnostics.
 # ══ tier A: the MACE model and the elastic-constrained refit ══════════════════
 entry("mace_al_elastic/models/Al_small_stagetwo.model", :A, "mace_al_elastic/train.sh",
       "trained MACE (stage two / SWA, epoch 340): the model every result is computed with"),
+entry("mace_al_elastic/models/Al_small_stagetwo_elastic.model", :A, "mace_al_elastic/4_compare.py",
+      "the elastic-constrained model as an ordinary MACE checkpoint (refit readout weights written in)"),
 entry("mace_al_elastic/models/train_config.txt", :A, "mace_al_elastic/train.sh",
       "the full resolved mace-torch configuration of the published training run"),
 entry("mace_al_elastic/models/train_log.txt", :A, "mace_al_elastic/train.sh",
@@ -217,6 +220,8 @@ entry("mace_al_elastic/models/train_log.txt", :A, "mace_al_elastic/train.sh",
     ("compare_elastic.txt",  "before/after test RMSEs and C_ij"),
     ("compare_elastic.pdf",  "the figure"),
     ("compare_elastic.png",  "the figure"))]...,
+entry("mace_al_elastic/results/elastic_matscipy.txt", :A, "mace_al_elastic/5_elastic_matscipy.py",
+      "a0 and C11/C12/C44 of both models from matscipy: the independent check"),
 
 # ══ tier B: cached Hessians and band paths — regenerable ═════════════════════
 entry("models/Al_12_4_6A_2_/results/undotted_Hbasis_4x4x4_a4.04494.jls", :B,

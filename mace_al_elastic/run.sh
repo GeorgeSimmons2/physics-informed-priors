@@ -7,6 +7,7 @@
 #   bash run.sh train       retrain the model from scratch (seed 1)                             SLURM, ~5.5 h
 #   bash run.sh all         train → constrain → compare on the RETRAINED model, chained          SLURM
 #   bash run.sh verify      compare a rerun ($OUT, default repro_results/) with results/         seconds
+#   bash run.sh matscipy    independent C_ij check (matscipy stress–strain on ASE Atoms)        ~1 min
 #
 # Every rerun writes to repro_* (repro_results/, repro_models/); results/ and models/ are the published
 # artifacts and are never overwritten.  Needs tier B (../data/Al/) for everything except replot and verify.
@@ -32,6 +33,8 @@ FIT="python3 1_constraints.py && python3 2_design.py && julia --project=$REPO 3_
 case "$MODE" in
 replot)
     python3 "$D/4_compare.py" --replot ;;
+matscipy)
+    python3 "$D/5_elastic_matscipy.py" ${2:+"$2"} ;;
 constrain)
     need_data
     j=$(sub mace_al_constrain "" ",OUT=${OUT:-$D/repro_results}${MODEL_FILE:+,MODEL_FILE=$MODEL_FILE}" "$FIT")

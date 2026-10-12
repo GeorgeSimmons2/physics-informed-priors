@@ -14,5 +14,6 @@ tar -cvf "${OUT:-/storage/astro2/phupfb/PhD/acestuff/physics-informed-priors-rep
   "models/Al_16_4_6A_3_/results/pinned_ensembles/bandpath_4x4x4_aref.jls" \
   "data/Al/manual_df_train_Al.extxyz" \
   "data/Al/manual_df_test_Al.xyz" \
+  "data/Al/subset_20_percent.extxyz" \
   "data/W/df_W_train.extxyz"
 echo "tier B archive → ${OUT:-/storage/astro2/phupfb/PhD/acestuff/physics-informed-priors-repro/tierB.tar}"

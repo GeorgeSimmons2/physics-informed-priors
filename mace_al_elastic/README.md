@@ -9,6 +9,7 @@ bash run.sh replot      # the figure, from the published data in results/       
 bash run.sh constrain   # re-derive θ on the published model                    (SLURM ~1 h, needs tier B)
 bash run.sh compare     # before/after errors and C_ij for that θ                (SLURM ~10 min)
 bash run.sh verify      # compare the rerun with results/
+bash run.sh matscipy    # independent check of the C_ij with matscipy (~1 min, tier A only)
 bash run.sh all         # retrain the model from scratch, then constrain + compare (SLURM ~7 h)
 ```
 
@@ -27,6 +28,11 @@ Test set: 3,000 random frames (seed 0) of `data/Al/manual_df_test_Al.xyz`, never
 The elastic constants above come from MACE's analytic stress (±0.5% strain) on the patched model, at each model's
 own relaxed lattice constant. That's independent of the finite-difference rows used in the fit.
 
+They are also reproduced independently, within 0.1% of target, by matscipy's stress–strain fit on ASE `Atoms`
+(`5_elastic_matscipy.py` → `results/elastic_matscipy.txt`). That check uses only the two checkpoints, an ASE cell
+relaxation and matscipy: it gets a0 = 4.0400 Å and C11 / C12 / C44 = 116.4 / 64.7 / 30.9 GPa for the constrained
+model, and 4.0523 Å, 110.8 / 56.3 / 29.9 GPa for MACE as trained (fit error ≤ 0.3 GPa).
+
 ## The pieces
 
 | step | script | what it does |
@@ -35,12 +41,14 @@ own relaxed lattice constant. That's independent of the finite-difference rows u
 | 1 | `1_constraints.py` | finite-difference rows ∂D/∂a, ∂²D/∂ε² at a₀ = 4.04 Å, so that C_ij = (160.2/V)·row·θ |
 | 2 | `2_design.py` | the readout basis D on the **whole training set** (1,579 frames) and the test sample; force normal equations GᵀG, Gᵀy_F from G = −∂D/∂r |
 | 3 | `3_qp.jl` | the QP: MACE's loss (per-atom E-MSE + 0.1 × F-MSE) on the training set, subject to C11, C12, C44 within ±0.1% and P(a₀) = 0 |
-| 4 | `4_compare.py` | before/after parity (energies and forces), error distributions, and C_ij by stress–strain |
+| 4 | `4_compare.py` | before/after parity (energies and forces), error distributions, and C_ij by stress–strain; saves the constrained model as a checkpoint |
+| 5 | `5_elastic_matscipy.py` | an independent C_ij check with matscipy, from the two checkpoints alone |
 | — | `lib.py` | the readout basis, θ ↔ model weights, strain helpers |
 
 **The model.** MACE with 64×0e + 64×1o hidden irreps, 2 interaction layers, r_max 6 Å, max_L 1, correlation 3 and a
 16-unit MLP readout, trained 400 epochs with stage two (SWA) from epoch 300.
 - The model used throughout is the **stage-two** file, `models/Al_small_stagetwo.model`: validation E 12.6 meV/atom, F 63.6 meV/Å.
+- `models/Al_small_stagetwo_elastic.model` is the constrained model as an ordinary MACE checkpoint, usable directly (e.g. for MD).
 - MACE also writes a stage-one `Al_small.model` (validation E 43.0 meV/atom). It isn't used.
 - The full resolved configuration is in `models/train_config.txt`, and the training log with its error tables in `models/train_log.txt`.
 

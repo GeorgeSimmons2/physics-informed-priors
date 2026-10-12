@@ -11,7 +11,8 @@ energy equals E_frozen + D·θ on a strained, rattled cell.
 
   python3 4_compare.py            compute from $OUT (θ, design files, model) → $OUT/compare_data.npz + figure
   python3 4_compare.py --replot   only the figure, from results/compare_data.npz (needs no model or data)
-Out: compare_elastic.{pdf,png} and compare_elastic.txt next to the data used.   Env: OUT, N_TEST (3000)
+Out: compare_elastic.{pdf,png} and compare_elastic.txt next to the data used; the computing run also saves the
+constrained model as an ordinary MACE checkpoint, Al_small_stagetwo_elastic.model.   Env: OUT, N_TEST (3000)
 """
 import os
 import sys
@@ -33,6 +34,8 @@ else:
     N_TEST = int(os.environ.get("N_TEST", 3000))
     theta = np.loadtxt(os.path.join(DIR, "theta_constrained_elastic.csv"), delimiter=",").ravel()
     before, after = lib.load_calc(), lib.patched_calc(theta)
+    import torch
+    torch.save(after.models[0], os.path.join(DIR, "Al_small_stagetwo_elastic.model"))   # usable on its own
     # patch check: E_after − E_before = D·(θ − θ0) away from equilibrium
     basis = lib.Basis(lib.load_calc())
     x = lib.strained(lib.fcc(4.0), e1=0.02, e4=0.03); x.rattle(0.05, seed=1)
