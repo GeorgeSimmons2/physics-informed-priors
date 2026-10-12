@@ -43,6 +43,7 @@ match the paper. Both are kept because they answer different questions.
 | Thermal expansion a(T) | `thermal_expansion_vs_experiment/` | the multi-volume and a_eq committees, then NPT | `npt_trajectories/` |
 | RLS vs constrained RLS, 200 K (phonons + RDFs) | `scripts/uq/rls_constrained_pops_Al_12/` | `results_rls/theta_rls_constrained.csv`, then 200 K NPT of both | `compare_rls_Al_12_4_6A_2.jl`, `npt_al16/npt_member_Al_16.jl`; rerun with `run_200K.sh all` |
 | MACE: elastic constants constrained, accuracy kept | `mace_al_elastic/` | `models/Al_small_stagetwo.model`, `results/theta_constrained_elastic.csv` | `train.sh`, `1_constraints.py` → `2_design.py` → `3_qp.jl` → `4_compare.py`; rerun with `mace_al_elastic/run.sh all` |
+| MACE constrained POPS: C_ij spread removed, test UQ kept | `mace_al_elastic/pops/` | `results/committee_{constrained,unconstrained}.csv` | `p1_rows.py` → `p2_cloud.jl` → `p3_sample.jl` → `p4_evaluate.py` → `p5_figures.py`; rerun with `mace_al_elastic/pops/run.sh` |
 
 Each folder has its own README covering the figure's construction and its caveats.
 `constrained_optimization/README.md` is the one to read first — it documents the whole

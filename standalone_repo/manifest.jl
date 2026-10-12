@@ -74,6 +74,15 @@ entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
     ("3_qp.jl",          "the constrained refit: MACE's loss, C11/C12/C44 and P(a0) = 0"),
     ("4_compare.py",     "before/after parity, error distributions, C_ij by stress–strain"),
     ("5_elastic_matscipy.py", "independent C_ij check: matscipy stress–strain on ASE Atoms, from the two checkpoints"))]...,
+[entry("mace_al_elastic/pops/$f", :code, :repo, n) for (f, n) in (
+    ("README.md",          "constrained POPS for the elastic-constrained MACE: steps, maths, result"),
+    ("run.sh",             "p1 → p5 on SLURM, or `replot` from tier A"),
+    ("p1_rows.py",         "every training/test energy and force component as a row of the readout basis"),
+    ("p1b_export_csv.py",  "the training rows as CSV for Julia"),
+    ("p2_cloud.jl",        "leverage, top 50%, one elastic-window QP per row; unconstrained cloud in closed form"),
+    ("p3_sample.jl",       "POPS hypercube + rejection sampling (src/POPS/POPSRegression.jl), seed 1234"),
+    ("p4_evaluate.py",     "test-set UQ vs each reference model; a0 and C_ij of every member"),
+    ("p5_figures.py",      "the figures, each a separate half-width PDF/PNG"))]...,
 
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
@@ -223,6 +232,24 @@ entry("mace_al_elastic/models/train_log.txt", :A, "mace_al_elastic/train.sh",
 entry("mace_al_elastic/results/elastic_matscipy.txt", :A, "mace_al_elastic/5_elastic_matscipy.py",
       "a0 and C11/C12/C44 of both models from matscipy: the independent check"),
 
+# ══ tier A: constrained POPS of the MACE readout ══════════════════════════════
+[entry("mace_al_elastic/pops/results/$f", :A, "mace_al_elastic/pops/p3_sample.jl", n) for (f, n) in (
+    ("committee_constrained.csv",   "100 constrained members (rows), each with a0 and C_ij in the windows"),
+    ("committee_unconstrained.csv", "100 unconstrained members about trained MACE"),
+    ("sample.txt",                  "hypercube directions, widths and acceptance"))]...,
+entry("mace_al_elastic/pops/results/cloud.txt", :A, "mace_al_elastic/pops/p2_cloud.jl",
+      "the cloud: rows kept, QP statuses, interpolation residuals, mean-model check"),
+[entry("mace_al_elastic/pops/results/$f", :A, "mace_al_elastic/pops/p4_evaluate.py", n) for (f, n) in (
+    ("uq_test.txt",     "test-set UQ of both committees against their reference models"),
+    ("cij_members.csv", "a0 and C_ij of every member and of both reference models"),
+    ("eval_data.npz",   "everything the figures plot: test predictions, spreads, C_ij"))]...,
+[entry("mace_al_elastic/pops/results/$f.$ext", :A, "mace_al_elastic/pops/p5_figures.py", "figure")
+ for f in ("parity_E_constrained", "parity_E_unconstrained", "parity_F_constrained", "parity_F_unconstrained",
+           "uncertainty_vs_error_E_constrained", "uncertainty_vs_error_E_unconstrained",
+           "uncertainty_vs_error_F_constrained", "uncertainty_vs_error_F_unconstrained",
+           "calibration_E", "calibration_F", "cij_spread")
+ for ext in ("pdf", "png")]...,
+
 # ══ tier B: cached Hessians and band paths — regenerable ═════════════════════
 entry("models/Al_12_4_6A_2_/results/undotted_Hbasis_4x4x4_a4.04494.jls", :B,
       "constrained_optimization/al12/01_committee_ncell4_densek.jl",
@@ -236,6 +263,12 @@ entry("models/Al_16_4_6A_3_/results/pinned_ensembles/bandpath_4x4x4_aref.jls", :
 # ══ tier B: the DFT datasets.  Cannot be regenerated from this repo ══════════
 entry("data/Al/manual_df_train_Al.extxyz", :B, :external, "Al training set"),
 entry("data/Al/manual_df_test_Al.xyz",     :B, :external, "Al held-out test set, used for parity/calibration"),
+entry("mace_al_elastic/pops/results/cloud.jls", :B, "mace_al_elastic/pops/p2_cloud.jl",
+      "the 14,755-member constrained and unconstrained clouds (~20 s to rebuild)"; rebuildable=true),
+entry("mace_al_elastic/pops/rows/rows_train.npz", :B, "mace_al_elastic/pops/p1_rows.py",
+      "training energies and force components as rows of the readout basis (~20 min to rebuild)"; rebuildable=true),
+entry("mace_al_elastic/pops/rows/rows_test.npz", :B, "mace_al_elastic/pops/p1_rows.py",
+      "the same for the 3,000-frame test sample (~35 min to rebuild)"; rebuildable=true),
 entry("data/Al/subset_20_percent.extxyz",  :B, :external,
       "1,579 frames, exactly 20% of manual_df_train_Al.extxyz: the training set of the Al_12 ACE model and of mace_al_elastic"),
 entry("data/W/df_W_train.extxyz",          :B, :external, "W training set — the EOS figure's pair-distance histogram"),

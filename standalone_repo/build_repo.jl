@@ -108,6 +108,10 @@ scripts/uq/rls_constrained_pops_Al_12/npt/*/T200K/md_trajectory.extxyz
 mace_al_elastic/repro_*/
 mace_al_elastic/results/repro_*
 mace_al_elastic/logs/
+mace_al_elastic/pops/rows/
+mace_al_elastic/pops/repro_*/
+mace_al_elastic/pops/logs/
+mace_al_elastic/pops/results/cloud.jls
 **/repro_*.pdf
 **/repro_*.png
 

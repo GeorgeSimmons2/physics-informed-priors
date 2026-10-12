@@ -1,7 +1,7 @@
 #!/bin/bash
 # run_all.sh — every way to run this repository.
 #
-#   bash run_all.sh replot        rebuild all six figures from the SAVED parameters (tier A only)
+#   bash run_all.sh replot        rebuild every figure from the SAVED parameters (tier A only)
 #   bash run_all.sh constrain     re-derive the parameters: W QP, Al_12 chain, Al_16 chain
 #   bash run_all.sh npt-saved     NPT on the PUBLISHED θ — the route that reproduces the figures
 #   bash run_all.sh npt-rebuilt   NPT on freshly rebuilt committees — a different member, so
@@ -55,8 +55,10 @@ replot)
   julia --project -t "${THREADS:-8}" thermal_expansion_vs_experiment/fcc_compare_constrained_vs_naive.jl
   echo "  [5/5] RLS vs constrained RLS at 200 K  (tier A; builds two 4×4×4 Hessians if not cached)"
   bash scripts/uq/rls_constrained_pops_Al_12/run_200K.sh replot
-  echo "  [6/6] MACE with constrained elastic constants  (tier A; numpy + matplotlib only)"
+  echo "  [6/7] MACE with constrained elastic constants  (tier A; numpy + matplotlib only)"
   bash mace_al_elastic/run.sh replot
+  echo "  [7/7] MACE constrained POPS: committee UQ and C_ij spread  (tier A; numpy + matplotlib only)"
+  bash mace_al_elastic/pops/run.sh replot
   ;;
 
 constrain|reproduce)

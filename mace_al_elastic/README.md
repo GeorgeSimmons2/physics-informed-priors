@@ -33,6 +33,15 @@ They are also reproduced independently, within 0.1% of target, by matscipy's str
 relaxation and matscipy: it gets a0 = 4.0400 Å and C11 / C12 / C44 = 116.4 / 64.7 / 30.9 GPa for the constrained
 model, and 4.0523 Å, 110.8 / 56.3 / 29.9 GPa for MACE as trained (fit error ≤ 0.3 GPa).
 
+## Constrained POPS (`pops/`)
+
+A 100-member committee in which **every member** keeps the constrained a0 and C_ij. It's built the way the
+paper's ACE committees are: a pointwise-optimal cloud from the top-50%-leverage observations, each a QP under
+the same elastic windows, then a rejection-sampled POPS hypercube. Against the unconstrained committee about
+trained MACE (C11 86–129 GPa, a0 4.037–4.074 Å), the spread in a0 and C_ij collapses to the ±0.1% window. The
+spread on held-out energies and forces is about the same. See `pops/README.md`; `bash pops/run.sh replot`
+redraws its figures from tier A.
+
 ## The pieces
 
 | step | script | what it does |
