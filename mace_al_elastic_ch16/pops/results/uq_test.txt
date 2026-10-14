@@ -1,0 +1,7 @@
+POPS committees on 3000 held-out test frames, 53196 force components (100 members each), errors of each committee's reference model (constrained: θc; unconstrained: MACE as trained); energies meV/atom, forces meV/Å
+               q   RMSE ref   mean σ  RMSE/σ in envelope  |err|≤σ  |err|≤2σ
+constrained    E      31.42    31.14    1.01       0.996    0.892     0.998
+constrained    F     186.74    54.83    3.41       0.964    0.737     0.939
+unconstrained  E      25.78    28.79    0.90       0.999    0.973     0.998
+unconstrained  F     194.88    53.41    3.65       0.966    0.772     0.948
+(Gaussian expectation: |err|≤σ 0.683, |err|≤2σ 0.954; 'in envelope' = DFT inside the committee's min–max)

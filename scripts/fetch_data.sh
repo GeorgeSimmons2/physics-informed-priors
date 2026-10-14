@@ -5,7 +5,7 @@
 #   bash scripts/fetch_data.sh verify     # verify what is already on disk
 #   bash scripts/fetch_data.sh --no-cache # skip the rebuildable caches (saves 443 MB)
 #
-# Tier B is 8.03 GB, dominated by the three design matrices.
+# Tier B is 8.13 GB, dominated by the three design matrices.
 # Tier A is already in the repository; you do not need this to run `run_all.sh replot`.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

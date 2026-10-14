@@ -1,0 +1,8 @@
+MACE (before) vs elastic-constrained readout refit (after); test set 3000 frames, 53196 force components
+          E RMSE (meV/atom)  F RMSE (meV/Å)
+before                25.78          194.88
+after                 31.42          186.74
+           a0 (Å)     C11     C12     C44       B   (GPa, stress–strain at own a0)
+before     4.0474   115.9    58.2    28.9    77.4
+after      4.0320   116.4    64.7    30.9    82.0
+target     4.0320   116.3    64.8    30.9    82.0

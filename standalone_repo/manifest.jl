@@ -23,6 +23,9 @@
 # that shares the constrained_optimization/ directory and is nothing to do with the four
 # figures; it was swept in by an earlier build.
 const EXCLUDE = ["constrained_optimization/mo_mace"]
+# the a0 = 4.032 Å reruns of mace_al_elastic/ (64 channels as published, and a new 16-channel model): copies of
+# its code with the changes in each CHANGES.md, every output written inside the copy
+const RERUNS = ("mace_al_elastic_a4032", "mace_al_elastic_ch16")
 
 const MODELS = ["Al_12_4_6A_2_", "Al_16_4_6A_3_", "W_20_4_5A_3"]
 
@@ -84,6 +87,19 @@ entry("npt_al16/npt_member_Al_16.jl", :code, :repo,
     ("p4_evaluate.py",     "test-set UQ vs each reference model; a0 and C_ij of every member"),
     ("p5_figures.py",      "the figures, each a separate half-width PDF/PNG"),
     ("p6_maxdev_vs_error.py", "|error| vs the largest member deviation toward DFT, linear axes; coverage = min–max envelope"))]...,
+[entry("$P/$f", :code, :repo, n) for P in RERUNS for (f, n) in (
+    ("CHANGES.md", "what differs from mace_al_elastic/, with the exact diff"),
+    ("rerun.sh",   "the whole pipeline on SLURM; FORCE=1 (it replaces the run published here), TRAIN=1 to train first"),
+    ("README.md", "mace_al_elastic/README.md, unchanged"), ("run.sh", "as mace_al_elastic/"), ("train.sh", "as mace_al_elastic/ (16 channels in _ch16)"),
+    ("lib.py", "as mace_al_elastic/, A0 = 4.032 Å"), ("1_constraints.py", "as mace_al_elastic/"), ("2_design.py", "as mace_al_elastic/"),
+    ("3_qp.jl", "as mace_al_elastic/"), ("4_compare.py", "as mace_al_elastic/, target a0 from lib.A0"),
+    ("5_elastic_matscipy.py", "as mace_al_elastic/, target a0 4.032 Å"),
+    ("pops/README.md", "as mace_al_elastic/pops/"), ("pops/run.sh", "as mace_al_elastic/pops/"),
+    ("pops/p1_rows.py", "as mace_al_elastic/pops/"), ("pops/p1b_export_csv.py", "as mace_al_elastic/pops/"),
+    ("pops/p2_cloud.jl", "as mace_al_elastic/pops/"), ("pops/p3_sample.jl", "as mace_al_elastic/pops/"),
+    ("pops/p4_evaluate.py", "as mace_al_elastic/pops/"), ("pops/p5_figures.py", "as mace_al_elastic/pops/, a0 reference 4.032 Å"),
+    ("pops/p6_maxdev_vs_error.py", "as mace_al_elastic/pops/"))]...,
+entry("mace_al_elastic_ch16/plot_training.py", :code, :repo, "training loss against optimiser step, from MACE's own log"),
 
 # ══ tier A: models without their design matrices ═════════════════════════════
 [entry("models/$m/$f", :A,
@@ -258,6 +274,41 @@ entry("mace_al_elastic/pops/results/cloud.txt", :A, "mace_al_elastic/pops/p2_clo
            "maxdev_vs_error_F_constrained", "maxdev_vs_error_F_unconstrained")
  for ext in ("pdf", "png")]...,
 
+# ══ tier A: the a0 = 4.032 Å reruns (same files as mace_al_elastic/, written by the same scripts in each copy) ══
+[entry("mace_al_elastic_a4032/models/$f", :A, "mace_al_elastic/train.sh", "a copy of mace_al_elastic/models/$f (the published model)")
+ for f in ("Al_small_stagetwo.model", "train_config.txt", "train_log.txt")]...,
+entry("mace_al_elastic_ch16/models/Al_small_stagetwo.model", :A, "mace_al_elastic_ch16/train.sh",
+      "the 16-channel MACE (stage two, epoch 370): 40,272 parameters"),
+entry("mace_al_elastic_ch16/repro_train/results/Al_small_run-1_train.txt", :A, "mace_al_elastic_ch16/train.sh",
+      "MACE's record of the 16-channel training: loss per optimiser step and per validation pass"),
+entry("mace_al_elastic_ch16/repro_train/logs/Al_small_run-1.log", :A, "mace_al_elastic_ch16/train.sh",
+      "the 16-channel training log: configuration, stage-two switch, error tables"),
+[entry("mace_al_elastic_ch16/results/training_loss.$ext", :A, "mace_al_elastic_ch16/plot_training.py", "figure") for ext in ("pdf", "png")]...,
+[entry("$P/results/$f", :A, "$P/1_constraints.py", "as mace_al_elastic/results/$f") for P in RERUNS
+ for f in ("theta0.csv", "D0.csv", "dD_da.csv", "d2D_da2.csv", "d2D_de11.csv", "d2D_de12.csv", "d2D_de44.csv", "frozen.csv", "meta.txt")]...,
+[entry("$P/results/$f", :A, "$P/3_qp.jl", "as mace_al_elastic/results/$f") for P in RERUNS
+ for f in ("theta_constrained_elastic.csv", "theta_ls_elastic.csv", "qp_elastic.txt")]...,
+[entry("$P/results/$f", :A, "$P/4_compare.py", "as mace_al_elastic/") for P in RERUNS
+ for f in ("compare_data.npz", "compare_elastic.txt", "compare_elastic.pdf", "compare_elastic.png", "Al_small_stagetwo_elastic.model")]...,
+[entry("$P/results/elastic_matscipy.txt", :A, "$P/5_elastic_matscipy.py", "the independent C_ij check") for P in RERUNS]...,
+[entry("$P/pops/results/$f", :A, "$P/pops/p3_sample.jl", "as mace_al_elastic/pops/") for P in RERUNS
+ for f in ("committee_constrained.csv", "committee_unconstrained.csv", "sample.txt")]...,
+[entry("$P/pops/results/cloud.txt", :A, "$P/pops/p2_cloud.jl", "as mace_al_elastic/pops/") for P in RERUNS]...,
+[entry("$P/pops/results/$f", :A, "$P/pops/p4_evaluate.py", "as mace_al_elastic/pops/") for P in RERUNS
+ for f in ("uq_test.txt", "cij_members.csv", "eval_data.npz")]...,
+[entry("$P/pops/results/$f.$ext", :A, "$P/pops/p5_figures.py", "figure") for P in RERUNS
+ for f in ("parity_E_constrained", "parity_E_unconstrained", "parity_F_constrained", "parity_F_unconstrained",
+           "uncertainty_vs_error_E_constrained", "uncertainty_vs_error_E_unconstrained",
+           "uncertainty_vs_error_F_constrained", "uncertainty_vs_error_F_unconstrained",
+           "calibration_E", "calibration_F", "cij_spread")
+ for ext in ("pdf", "png")]...,
+[entry("$P/pops/results/$f", :A, "$P/pops/p6_maxdev_vs_error.py", "as mace_al_elastic/pops/") for P in RERUNS
+ for f in ("maxdev_test.txt", "maxdev_data.npz")]...,
+[entry("$P/pops/results/$f.$ext", :A, "$P/pops/p6_maxdev_vs_error.py", "figure") for P in RERUNS
+ for f in ("maxdev_vs_error_E_constrained", "maxdev_vs_error_E_unconstrained",
+           "maxdev_vs_error_F_constrained", "maxdev_vs_error_F_unconstrained")
+ for ext in ("pdf", "png")]...,
+
 # ══ tier B: cached Hessians and band paths — regenerable ═════════════════════
 entry("models/Al_12_4_6A_2_/results/undotted_Hbasis_4x4x4_a4.04494.jls", :B,
       "constrained_optimization/al12/01_committee_ncell4_densek.jl",
@@ -277,6 +328,9 @@ entry("mace_al_elastic/pops/rows/rows_train.npz", :B, "mace_al_elastic/pops/p1_r
       "training energies and force components as rows of the readout basis (~20 min to rebuild)"; rebuildable=true),
 entry("mace_al_elastic/pops/rows/rows_test.npz", :B, "mace_al_elastic/pops/p1_rows.py",
       "the same for the 3,000-frame test sample (~35 min to rebuild)"; rebuildable=true),
+[entry("$P/pops/results/cloud.jls", :B, "$P/pops/p2_cloud.jl", "the reruns' POPS clouds"; rebuildable=true) for P in RERUNS]...,
+[entry("$P/pops/rows/$f", :B, "$P/pops/p1_rows.py", "the reruns' readout-basis rows"; rebuildable=true)
+ for P in RERUNS for f in ("rows_train.npz", "rows_test.npz")]...,
 entry("data/Al/subset_20_percent.extxyz",  :B, :external,
       "1,579 frames, exactly 20% of manual_df_train_Al.extxyz: the training set of the Al_12 ACE model and of mace_al_elastic"),
 entry("data/W/df_W_train.extxyz",          :B, :external, "W training set — the EOS figure's pair-distance histogram"),

@@ -44,6 +44,7 @@ match the paper. Both are kept because they answer different questions.
 | RLS vs constrained RLS, 200 K (phonons + RDFs) | `scripts/uq/rls_constrained_pops_Al_12/` | `results_rls/theta_rls_constrained.csv`, then 200 K NPT of both | `compare_rls_Al_12_4_6A_2.jl`, `npt_al16/npt_member_Al_16.jl`; rerun with `run_200K.sh all` |
 | MACE: elastic constants constrained, accuracy kept | `mace_al_elastic/` | `models/Al_small_stagetwo.model`, `results/theta_constrained_elastic.csv` | `train.sh`, `1_constraints.py` → `2_design.py` → `3_qp.jl` → `4_compare.py`; rerun with `mace_al_elastic/run.sh all` |
 | MACE constrained POPS: C_ij spread removed, test UQ kept | `mace_al_elastic/pops/` | `results/committee_{constrained,unconstrained}.csv` | `p1_rows.py` → `p2_cloud.jl` → `p3_sample.jl` → `p4_evaluate.py` → `p5_figures.py`, `p6_maxdev_vs_error.py`; rerun with `mace_al_elastic/pops/run.sh`, then `p6_maxdev_vs_error.py` |
+| MACE reruns at a0 = 4.032 Å (experimental near-0 K): the published 64-channel model, and a new 16-channel model | `mace_al_elastic_a4032/`, `mace_al_elastic_ch16/` | `results/theta_constrained_elastic.csv`, `pops/results/`, `results/training_loss.pdf` (16 channels) | copies of `mace_al_elastic/`, changes in each `CHANGES.md`; rerun with `FORCE=1 bash rerun.sh` (`TRAIN=1` to retrain) |
 
 Each folder has its own README covering the figure's construction and its caveats.
 `constrained_optimization/README.md` is the one to read first — it documents the whole
@@ -98,6 +99,7 @@ thermal_expansion_vs_experiment/   a(T) against Wilson 1941
 scripts/uq/rls_constrained_pops_Al_12/   RLS vs constrained RLS at 200 K: runner, README, plot data
 npt_al16/                   the NPT driver that figure uses (MODELDIR selects the model)
 mace_al_elastic/            a trained MACE model with its elastic constants constrained (Python)
+mace_al_elastic_a4032/      the same at a0 = 4.032 Å; mace_al_elastic_ch16/: a 16-channel model at 4.032 Å
 models/                     tier A committed; A.csv fetched
 data/manifest.toml          every input: path, sha256, size, tier, producer
 scripts/fetch_data.sh       pull and verify tier B

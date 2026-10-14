@@ -1,0 +1,4 @@
+committees from the POPS clouds (p3_sample.jl), seed 1234, 100 members each
+constrained:   14755 cloud members → hypercube with 27 directions (width mean 4.8, max 45); rejection with the windows [1.8 s]
+               all members inside the windows: true (max violation 0.0e+00)
+unconstrained: 14755 cloud members about θ0 → hypercube with 30 directions (width mean 3.79, max 42.3); no rejection

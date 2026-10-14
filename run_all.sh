@@ -60,6 +60,10 @@ replot)
   echo "  [7/7] MACE constrained POPS: committee UQ and C_ij spread  (tier A; numpy + matplotlib only)"
   bash mace_al_elastic/pops/run.sh replot
   python3 mace_al_elastic/pops/p6_maxdev_vs_error.py --replot
+  echo "  [8/8] MACE reruns at a0 = 4.032 Å: 64 and 16 channels  (tier A; numpy + matplotlib only)"
+  for P in mace_al_elastic_a4032 mace_al_elastic_ch16; do
+    bash $P/run.sh replot && bash $P/pops/run.sh replot && python3 $P/pops/p6_maxdev_vs_error.py --replot
+  done
   ;;
 
 constrain|reproduce)
