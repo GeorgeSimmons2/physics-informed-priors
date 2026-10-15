@@ -32,7 +32,7 @@ diff -ru -x results -x repro_results -x rows -x logs -x models -x __pycache__ -x
  open(os.path.join(out, "elastic_matscipy.txt"), "w").write("\n".join(lines) + "\n")
 diff -ru -x results -x repro_results -x rows -x logs -x models -x __pycache__ -x repro_models -x repro_train -x '*.md' -x rerun.sh -x plot_training.py mace_al_elastic/lib.py mace_al_elastic_a4032/lib.py
 --- mace_al_elastic/lib.py	2026-10-10 23:51:56.939494303 +0100
-+++ mace_al_elastic_a4032/lib.py	2026-10-14 12:34:07.932037972 +0100
++++ mace_al_elastic_a4032/lib.py	2026-10-15 15:00:54.521525634 +0100
 @@ -9,7 +9,7 @@
  θ = [scale·w₀, scale·w₂, shift] are the trained readout weights (θ0).  Everything up to D is frozen.
  Changing θ is a change of MACE's own weights: patched_calc(θ) writes θ back into the model.
@@ -42,11 +42,13 @@ diff -ru -x results -x repro_results -x rows -x logs -x models -x __pycache__ -x
  """
  import os
  
-@@ -28,7 +28,7 @@
+@@ -28,7 +28,9 @@
  # Targets: the paper's Al elastic constants (GPa), and the lattice constant (Å) at which they apply.
  C_TARGET = {"C11": 116.3, "C12": 64.8, "C44": 30.9}
  B_TARGET = (C_TARGET["C11"] + 2 * C_TARGET["C12"]) / 3
 -A0 = float(os.environ.get("A0", 4.04))
++# A0: the experimental lattice constant of Al near 0 K, 4.03185 Å extrapolated to 0 K (Straumanis & Woodard,
++# Acta Cryst. A27, 549 (1971); tabulated in Nakashima, arXiv:2002.01562, Appendix A). mace_al_elastic/ uses 4.04 Å.
 +A0 = float(os.environ.get("A0", 4.032))
  
  

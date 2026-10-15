@@ -28,6 +28,8 @@ EV_A3_TO_GPA = 160.21766208
 # Targets: the paper's Al elastic constants (GPa), and the lattice constant (Å) at which they apply.
 C_TARGET = {"C11": 116.3, "C12": 64.8, "C44": 30.9}
 B_TARGET = (C_TARGET["C11"] + 2 * C_TARGET["C12"]) / 3
+# A0: the experimental lattice constant of Al near 0 K, 4.03185 Å extrapolated to 0 K (Straumanis & Woodard,
+# Acta Cryst. A27, 549 (1971); tabulated in Nakashima, arXiv:2002.01562, Appendix A). mace_al_elastic/ uses 4.04 Å.
 A0 = float(os.environ.get("A0", 4.032))
 
 
